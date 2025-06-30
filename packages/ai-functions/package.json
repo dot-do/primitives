@@ -37,7 +37,9 @@
   "homepage": "https://mdx.org.ai",
   "dependencies": {
     "ai-providers": "workspace:*",
-    "zod": "^3.24.3"
+    "zod": "^3.24.3",
+    "yaml": "^2.8.0",
+    "@mendable/firecrawl-js": "^1.10.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
