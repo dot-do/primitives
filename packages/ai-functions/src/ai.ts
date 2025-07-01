@@ -215,7 +215,7 @@ function createValidObject(partialObject: any, schemaShape: any): any {
 /**
  * Generate text using the AI model
  */
-const generateText = async (options: { model: any; prompt: string; temperature?: number; maxTokens?: number; [key: string]: any }) => {
+export const generateText = async (options: { model: any; prompt: string; temperature?: number; maxTokens?: number; [key: string]: any }) => {
   const { model, prompt, ...rest } = options
 
   const hasCompleteMethod = model && typeof model.complete === 'function'
