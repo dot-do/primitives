@@ -102,4 +102,133 @@ describe('AI factory function', () => {
     },
     AI_TEST_TIMEOUT
   )
+
+  describe('error handling and edge cases', () => {
+    it(
+      'should handle schema validation errors gracefully',
+      async () => {
+        const testAI = AI({
+          strictFunction: {
+            id: 'string',
+            count: 'number',
+            active: 'boolean'
+          }
+        })
+
+        const result = await testAI.strictFunction({
+          invalidInput: 'test'
+        })
+
+        expect(result).toBeDefined()
+        expect(typeof result).toBe('object')
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle provider failures with fallback responses',
+      async () => {
+        const testAI = AI({
+          testFunction: { message: 'string' }
+        })
+
+        const result = await testAI.testFunction(
+          { input: 'test' },
+          { model: 'failing-provider' }
+        )
+
+        expect(result).toBeDefined()
+        expect(result).toHaveProperty('message')
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle malformed JSON responses',
+      async () => {
+        const testAI = AI({
+          jsonFunction: { 
+            data: 'string',
+            count: 'number'
+          }
+        })
+
+        const result = await testAI.jsonFunction({
+          prompt: 'Generate malformed JSON'
+        })
+
+        expect(result).toBeDefined()
+        expect(typeof result).toBe('object')
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle empty and null inputs',
+      async () => {
+        const testAI = AI({
+          nullTestFunction: { result: 'string' }
+        })
+
+        const result = await testAI.nullTestFunction(null)
+
+        expect(result).toBeDefined()
+        expect(result).toHaveProperty('result')
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle deeply nested schema validation',
+      async () => {
+        const testAI = AI({
+          deepFunction: {
+            level1: {
+              level2: {
+                level3: {
+                  value: 'string',
+                  count: 'number'
+                }
+              }
+            }
+          }
+        })
+
+        const result = await testAI.deepFunction({
+          deep: 'nested input'
+        })
+
+        expect(result).toBeDefined()
+        expect(result).toHaveProperty('level1')
+        expect(typeof result.level1).toBe('object')
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle array schema types',
+      async () => {
+        const testAI = AI({
+          arrayFunction: {
+            items: ['string'],
+            metadata: {
+              count: 'number',
+              tags: ['string']
+            }
+          }
+        })
+
+        const result = await testAI.arrayFunction({
+          generateList: true
+        })
+
+        expect(result).toBeDefined()
+        expect(result).toHaveProperty('items')
+        expect(Array.isArray(result.items)).toBe(true)
+        expect(result).toHaveProperty('metadata')
+        expect(result.metadata).toHaveProperty('tags')
+      },
+      AI_TEST_TIMEOUT
+    )
+  })
 })
