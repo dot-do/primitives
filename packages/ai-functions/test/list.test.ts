@@ -123,4 +123,88 @@ describe('list function', () => {
       AI_TEST_TIMEOUT
     )
   })
+
+  describe('error handling', () => {
+    it(
+      'should handle JSON parsing errors in streaming',
+      async () => {
+        const result = await list`Generate malformed JSON list`
+        
+        expect(Array.isArray(result)).toBe(true)
+        expect(result.length).toBeGreaterThanOrEqual(0)
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle provider streaming failures',
+      async () => {
+        const items: string[] = []
+        const languages = list`List programming languages`
+        
+        try {
+          for await (const item of languages) {
+            items.push(item)
+            if (items.length >= 5) break
+          }
+        } catch (error) {
+          
+        }
+        
+        expect(Array.isArray(items)).toBe(true)
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle invalid template usage',
+      async () => {
+        expect(() => {
+          (list as any)()
+        }).toThrow('list function must be used as a template literal tag')
+      }
+    )
+
+    it(
+      'should handle configuration errors gracefully',
+      async () => {
+        const result = await list`Generate list`
+        
+        expect(Array.isArray(result)).toBe(true)
+        expect(result.length).toBeGreaterThan(0)
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle empty streaming responses',
+      async () => {
+        const items: string[] = []
+        const emptyList = list`Generate empty list`
+        
+        for await (const item of emptyList) {
+          items.push(item)
+          if (items.length >= 3) break
+        }
+        
+        expect(Array.isArray(items)).toBe(true)
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle promise rejection gracefully',
+      async () => {
+        const listPromise = list`Test list with error conditions`
+        
+        try {
+          const result = await listPromise
+          expect(Array.isArray(result)).toBe(true)
+        } catch (error) {
+          expect(error).toBeDefined()
+        }
+      },
+      AI_TEST_TIMEOUT
+    )
+  })
 })

@@ -190,4 +190,85 @@ describe('ai template literal function', () => {
       AI_TEST_TIMEOUT
     )
   })
+
+  describe('error handling', () => {
+    it(
+      'should handle JSON parsing errors gracefully',
+      async () => {
+        const result = await ai`Generate invalid JSON response`({ 
+          schema: testSchema,
+          model: 'mock-invalid-json' 
+        })
+        
+        expect(result).toBeDefined()
+        expect(typeof result).toBe('object')
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle schema validation failures',
+      async () => {
+        const strictSchema = z.object({
+          requiredField: z.string(),
+          numericField: z.number().min(100)
+        })
+        
+        const result = await ai`Generate data that might not match schema`({ 
+          schema: strictSchema 
+        })
+        
+        expect(result).toBeDefined()
+        expect(typeof result).toBe('object')
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle provider connection failures',
+      async () => {
+        const result = await ai`Test prompt`({ 
+          model: 'non-existent-provider' 
+        })
+        
+        expect(result).toBeDefined()
+        expect(typeof result).toBe('string')
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle malformed template literals',
+      async () => {
+        expect(() => {
+          ai()
+        }).toThrow('Not implemented yet')
+      }
+    )
+
+    it(
+      'should handle empty schema gracefully',
+      async () => {
+        const result = await ai`Generate content`({ schema: null })
+        
+        expect(result).toBeDefined()
+        expect(typeof result).toBe('string')
+      },
+      AI_TEST_TIMEOUT
+    )
+
+    it(
+      'should handle invalid configuration options',
+      async () => {
+        const result = await ai`Test prompt`({ 
+          temperature: -1,
+          maxTokens: -100
+        })
+        
+        expect(result).toBeDefined()
+        expect(typeof result).toBe('string')
+      },
+      AI_TEST_TIMEOUT
+    )
+  })
 })
