@@ -15,6 +15,7 @@
     "release": "release-it"
   },
   "dependencies": {
+    "ai-providers": "workspace:*",
     "camelcase": "^8.0.0",
     "camelcase-keys": "^8.0.0",
     "json5": "^2.2.3"
