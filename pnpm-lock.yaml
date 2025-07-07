@@ -1644,6 +1644,9 @@ importers:
 
   packages/language-models:
     dependencies:
+      ai-providers:
+        specifier: workspace:*
+        version: link:../ai-providers
       camelcase:
         specifier: ^8.0.0
         version: 8.0.0
