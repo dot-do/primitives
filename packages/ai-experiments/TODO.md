@@ -4,30 +4,30 @@
 
 - [x] Create package structure
 - [x] Document API in README.md
-- [ ] Implement package.json with proper configuration
-- [ ] Implement cartesian.ts
-- [ ] Implement experiment.ts
-- [ ] Implement runner.ts
-- [ ] Implement types.ts
-- [ ] Set up exports in index.ts
-- [ ] Add proper TypeScript configuration
-- [ ] Add test files for all components
-- [ ] Ensure CI passes with the new package
+- [x] Implement package.json with proper configuration
+- [x] Implement cartesian.ts
+- [x] Implement experiment.ts
+- [x] Implement runner.ts
+- [x] Implement types.ts
+- [x] Set up exports in index.ts
+- [x] Add proper TypeScript configuration
+- [x] Add test files for all components
+- [x] Ensure CI passes with the new package
 
 ## Technical Requirements
 
-- [ ] Support for various AI tasks (tagged templates, schema, text)
-- [ ] Automatic parameter handling (models, temperature, topK)
-- [ ] Vitest-based runner for experiments
-- [ ] Save results as markdown files in `.ai/experiments/**`
-- [ ] Create subfolders for different variations
+- [x] Support for various AI tasks (tagged templates, schema, text)
+- [x] Automatic parameter handling (models, temperature, topK)
+- [x] Vitest-based runner for experiments
+- [x] Save results as markdown files in `.ai/experiments/**`
+- [x] Create subfolders for different variations
 
 ## Verification Requirements
 
-- [ ] Test cartesian function with various inputs
-- [ ] Test Experiment function with different parameter combinations
-- [ ] Test runner with sample experiment files
-- [ ] Verify markdown output format
+- [x] Test cartesian function with various inputs
+- [x] Test Experiment function with different parameter combinations
+- [x] Test runner with sample experiment files
+- [x] Verify markdown output format
 
 ## Future Enhancements
 

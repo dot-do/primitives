@@ -81,6 +81,25 @@ describe('createRunner', () => {
 
     expect(fs.writeFileSync).toHaveBeenCalledWith('.ai/experiments/README.md', expect.stringContaining('Experiment Results'))
   })
+
+  it('should not create README.md if it already exists', () => {
+    vi.mocked(fs.existsSync).mockReturnValue(true)
+
+    const customReporter = createMarkdownReporter('.ai/experiments')
+    customReporter.onFinished([], [])
+
+    expect(fs.writeFileSync).not.toHaveBeenCalled()
+  })
+
+  it('should handle custom output directory paths', () => {
+    vi.mocked(fs.existsSync).mockReturnValue(false)
+
+    const customReporter = createMarkdownReporter('custom/path/experiments')
+    customReporter.onFinished([], [])
+
+    expect(fs.mkdirSync).toHaveBeenCalledWith('custom/path/experiments', { recursive: true })
+    expect(fs.writeFileSync).toHaveBeenCalledWith('custom/path/experiments/README.md', expect.stringContaining('Experiment Results'))
+  })
 })
 
 function createMarkdownReporter(outputDir: string) {
