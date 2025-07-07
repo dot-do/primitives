@@ -1,7 +1,16 @@
-import { describe, it, expect } from 'vitest'
-import { parse, getModel, getModels } from '../src/parser.js'
+import { describe, it, expect, vi } from 'vitest'
+import { parse, getModel, getModels, createModel } from '../src/index.js'
 import { models } from '../src/collections/models.js'
 import { aliases } from '../src/aliases.js'
+
+vi.mock('ai-providers', () => ({
+  languageModel: vi.fn((modelId: string) => ({
+    complete: vi.fn().mockResolvedValue({ text: 'mocked response' }),
+    streamComplete: vi.fn().mockResolvedValue({}),
+    generate: vi.fn().mockResolvedValue({ text: 'mocked response' }),
+    stream: vi.fn().mockResolvedValue({})
+  }))
+}))
 
 describe('integration tests', () => {
   it('should parse model references and find matching models', () => {
@@ -59,5 +68,36 @@ describe('integration tests', () => {
     expect(parsed.providerConstraints?.[0].field).toBe('cost')
     expect(parsed.providerConstraints?.[0].type).toBe('lt')
     expect(parsed.providerConstraints?.[0].value).toBe('1')
+  })
+
+  describe('createModel integration', () => {
+    it('should create model using aliases', () => {
+      const model = createModel({
+        provider: 'openai',
+        modelName: 'gpt-4o'
+      })
+      
+      expect(model).toBeDefined()
+    })
+
+    it('should work with parsed model references', () => {
+      const parsed = parse('anthropic/claude-3.5-sonnet')
+      expect(parsed.author).toBe('anthropic')
+      expect(parsed.model).toBe('claude-3.5-sonnet')
+      
+      const model = createModel({
+        provider: parsed.author!,
+        modelName: parsed.model!
+      })
+      
+      expect(model).toBeDefined()
+    })
+
+    it('should handle model validation through createModel', () => {
+      expect(() => createModel({
+        provider: 'nonexistent',
+        modelName: 'fake-model'
+      })).toThrow('Model nonexistent/fake-model not found')
+    })
   })
 })
