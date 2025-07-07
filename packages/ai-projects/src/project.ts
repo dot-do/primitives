@@ -15,6 +15,8 @@ import crypto from 'crypto'
  */
 export function Project(config: ProjectConfig): ProjectManagement {
   const manager = Manager({
+    name: config.name,
+    description: config.description,
     objectives: config.objectives || {},
     agents: {},
     initialPlans: [],
