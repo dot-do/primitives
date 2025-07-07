@@ -3,12 +3,32 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     environment: 'node',
+    include: ['**/*.test.ts', '**/*.test.tsx'],
+    exclude: ['node_modules', 'dist'],
     globals: true,
   },
-  esbuild: {
-    target: 'node14'
+  resolve: {
+    conditions: ['node'],
   },
   css: {
-    postcss: false
-  }
+    modules: {
+      generateScopedName: '[local]',
+    },
+    postcss: {
+      plugins: []
+    }
+  },
+  plugins: [
+    {
+      name: 'mock-css-imports',
+      transform(code, id) {
+        if (id.match(/\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\?)/)) {
+          return {
+            code: 'export default {}',
+            map: null
+          }
+        }
+      }
+    }
+  ]
 })
