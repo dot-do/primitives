@@ -30,4 +30,32 @@ describe('cartesian', () => {
       { a: 2, b: 'x', c: false },
     ])
   })
+
+  it('should handle single value arrays', () => {
+    const result = cartesian({ a: [1], b: ['x'], c: [true] })
+    expect(result).toEqual([{ a: 1, b: 'x', c: true }])
+  })
+
+  it('should handle mixed data types', () => {
+    const result = cartesian({ 
+      num: [1, 2], 
+      str: ['a'], 
+      bool: [true, false], 
+      obj: [{ id: 1 }] 
+    })
+    expect(result).toEqual([
+      { num: 1, str: 'a', bool: true, obj: { id: 1 } },
+      { num: 1, str: 'a', bool: false, obj: { id: 1 } },
+      { num: 2, str: 'a', bool: true, obj: { id: 1 } },
+      { num: 2, str: 'a', bool: false, obj: { id: 1 } },
+    ])
+  })
+
+  it('should preserve order of combinations', () => {
+    const result = cartesian({ first: [1, 2], second: ['a', 'b'] })
+    expect(result[0]).toEqual({ first: 1, second: 'a' })
+    expect(result[1]).toEqual({ first: 1, second: 'b' })
+    expect(result[2]).toEqual({ first: 2, second: 'a' })
+    expect(result[3]).toEqual({ first: 2, second: 'b' })
+  })
 })
