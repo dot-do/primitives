@@ -23,4 +23,5 @@ fs.mkdirSync('dist/src', { recursive: true });
 console.log('Compiling registry.ts to registry.js...');
 execSync('esbuild src/registry.ts --bundle --platform=node --outfile=dist/src/registry.js --format=esm --external:*');
 
+
 console.log('Build completed successfully!');
