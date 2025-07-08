@@ -1,2 +1,2 @@
 export * from './types'
-export { Plan } from './lib'
+export { Plan, generateAIPlan } from './lib'
