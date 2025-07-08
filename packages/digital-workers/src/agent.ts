@@ -13,7 +13,7 @@ export function Agent(config: AgentConfig): AutonomousAgent {
       handlers[trigger] = createEventHandler(trigger, config)
       return handlers
     },
-    {} as Record<string, Function>
+    {} as Record<string, (data: any) => Promise<any>>
   )
 
   const agent: AutonomousAgent = {
@@ -62,7 +62,7 @@ export function Agent(config: AgentConfig): AutonomousAgent {
 /**
  * Creates a proxy for dynamic method invocation
  */
-function createAgentProxy(config: AgentConfig, state: Record<string, any>): any {
+function createAgentProxy(config: AgentConfig, _state: Record<string, any>): any {
   return new Proxy(
     {},
     {
@@ -85,7 +85,7 @@ function createAgentProxy(config: AgentConfig, state: Record<string, any>): any 
 /**
  * Creates an event handler function
  */
-function createEventHandler(trigger: string, config: AgentConfig): Function {
+function createEventHandler(trigger: string, config: AgentConfig): (data: any) => Promise<any> {
   return async (data: any) => {
     console.log(`Event ${trigger} triggered for agent ${config.name}`)
     return {

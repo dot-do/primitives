@@ -28,12 +28,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/drivly/primitives.org.ai.git",
+    "url": "https://github.com/dot-do/primitives.git",
     "directory": "packages/digital-workers"
   },
   "homepage": "https://mdx.org.ai",
   "bugs": {
-    "url": "https://github.com/drivly/primitives.org.ai/issues"
+    "url": "https://github.com/dot-do/primitives/issues"
   },
   "dependencies": {
     "autonomous-agents": "workspace:*",
