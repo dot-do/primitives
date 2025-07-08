@@ -36,11 +36,13 @@ export const getSettings = cache(async () => {
 
 interface AIOptions {
   function?: string;
-  output?: string;
+  output?: 'object' | 'array' | 'enum' | 'no-schema';
   model?: string;
   system?: string;
   temperature?: number;
   maxTokens?: number;
+  schema?: any;
+  iterator?: boolean;
   [key: string]: any;
 }
 
@@ -81,7 +83,7 @@ export const ai = async (promptOrTemplate: string | TemplateStringsArray, ...arg
   }
   
   const result = typeof promptOrTemplate === 'string' 
-    ? await aiFunction(prompt as any, options)
+    ? await aiFunction`${prompt}`(options as any)
     : await aiFunction(promptOrTemplate as any, ...args);
   
   const event = await (db as unknown as DbOperations).create({

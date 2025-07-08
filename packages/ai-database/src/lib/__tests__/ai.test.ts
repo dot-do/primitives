@@ -3,13 +3,19 @@ import { ai, AI } from '../ai'
 import { DB } from '../db'
 import { db } from '../../databases/sqlite'
 
+function setupTestEnvironment() {
+  if (!process.env.AI_GATEWAY_URL) {
+    process.env.AI_GATEWAY_URL = 'https://api.llm.do'
+  }
+  if (!process.env.AI_GATEWAY_TOKEN) {
+    process.env.AI_GATEWAY_TOKEN = process.env.OPENAI_API_KEY || 'test-token'
+  }
+}
+
 vi.mock('@payload-config', () => ({
   default: {}
 }))
 
-vi.mock('@ai-sdk/openai', () => ({
-  createOpenAI: vi.fn().mockReturnValue({})
-}))
 
 vi.mock('payload', () => ({
   getPayload: vi.fn().mockResolvedValue({
@@ -25,12 +31,6 @@ vi.mock('graphql', () => ({
   StringValueNode: vi.fn()
 }))
 
-vi.mock('ai', () => ({
-  embed: vi.fn(),
-  embedMany: vi.fn(),
-  generateObject: vi.fn(),
-  generateText: vi.fn()
-}))
 
 vi.mock('../../databases/sqlite', () => ({
   db: {
@@ -43,23 +43,9 @@ vi.mock('../../databases/sqlite', () => ({
   }
 }))
 
-vi.mock('ai-functions', () => {
-  const mockAi = vi.fn().mockImplementation((prompt, options) => {
-    return Promise.resolve('mocked ai response')
-  })
-  
-  const mockAIFactory = vi.fn().mockImplementation((funcs) => {
-    return funcs
-  })
-  
-  return {
-    ai: mockAi,
-    AI: mockAIFactory
-  }
-})
-
 describe('Enhanced AI functions', () => {
   beforeEach(() => {
+    setupTestEnvironment()
     vi.resetAllMocks && vi.resetAllMocks()
     
     const mockedDb = db as any
@@ -80,7 +66,10 @@ describe('Enhanced AI functions', () => {
 
   describe('ai function', () => {
     it('should check for function existence and create if not found', async () => {
-      await ai('test prompt', { function: 'testFunction' })
+      const result = await ai('Generate a simple test response', { function: 'testFunction' })
+      
+      expect(result).toBeDefined()
+      expect(typeof result).toBe('string')
       
       expect((db as any).findOne).toHaveBeenCalledWith({
         collection: 'functions',
@@ -93,10 +82,13 @@ describe('Enhanced AI functions', () => {
           name: 'testFunction'
         })
       }))
-    })
+    }, 30000)
 
     it('should store event and generation records', async () => {
-      await ai('test prompt')
+      const result = await ai('Generate a test response for database tracking')
+      
+      expect(result).toBeDefined()
+      expect(typeof result).toBe('string')
       
       expect((db as any).create).toHaveBeenCalledWith(expect.objectContaining({
         collection: 'events'
@@ -105,7 +97,7 @@ describe('Enhanced AI functions', () => {
       expect((db as any).create).toHaveBeenCalledWith(expect.objectContaining({
         collection: 'generations'
       }))
-    })
+    }, 30000)
   })
 
   describe('AI function', () => {

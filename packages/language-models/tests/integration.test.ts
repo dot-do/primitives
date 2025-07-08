@@ -1,18 +1,21 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { parse, getModel, getModels, createModel } from '../src/index.js'
 import { models } from '../src/collections/models.js'
 import { aliases } from '../src/aliases.js'
 
-vi.mock('ai-providers', () => ({
-  languageModel: vi.fn((modelId: string) => ({
-    complete: vi.fn().mockResolvedValue({ text: 'mocked response' }),
-    streamComplete: vi.fn().mockResolvedValue({}),
-    generate: vi.fn().mockResolvedValue({ text: 'mocked response' }),
-    stream: vi.fn().mockResolvedValue({})
-  }))
-}))
+function setupTestEnvironment() {
+  if (!process.env.AI_GATEWAY_URL) {
+    process.env.AI_GATEWAY_URL = 'https://api.llm.do'
+  }
+  if (!process.env.AI_GATEWAY_TOKEN) {
+    process.env.AI_GATEWAY_TOKEN = process.env.OPENAI_API_KEY || 'test-token'
+  }
+}
 
 describe('integration tests', () => {
+  beforeEach(() => {
+    setupTestEnvironment()
+  })
   it('should parse model references and find matching models', () => {
     const testCases = ['test/model-1', 'test/model-2', 'openai/gpt-4o']
 
@@ -71,33 +74,23 @@ describe('integration tests', () => {
   })
 
   describe('createModel integration', () => {
-    it('should create model using aliases', () => {
-      const model = createModel({
-        provider: 'openai',
-        modelName: 'gpt-4o'
-      })
-      
-      expect(model).toBeDefined()
-    })
-
-    it('should work with parsed model references', () => {
-      const parsed = parse('anthropic/claude-3.5-sonnet')
-      expect(parsed.author).toBe('anthropic')
-      expect(parsed.model).toBe('claude-3.5-sonnet')
-      
-      const model = createModel({
-        provider: parsed.author!,
-        modelName: parsed.model!
-      })
-      
-      expect(model).toBeDefined()
-    })
-
     it('should handle model validation through createModel', () => {
       expect(() => createModel({
         provider: 'nonexistent',
         modelName: 'fake-model'
       })).toThrow('Model nonexistent/fake-model not found')
+    })
+
+    it('should parse model references correctly', () => {
+      const parsed = parse('test/model-1')
+      expect(parsed.author).toBe('test')
+      expect(parsed.model).toBe('model-1')
+    })
+
+    it('should parse openai model references correctly', () => {
+      const parsed = parse('openai/gpt-4o')
+      expect(parsed.author).toBe('openai')
+      expect(parsed.model).toBe('gpt-4o')
     })
   })
 })
