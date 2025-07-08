@@ -47,7 +47,7 @@
   "homepage": "https://primitives.org.ai",
   "dependencies": {
     "ai-props": "^0.1.0",
-    "better-auth": "^1.1.21",
+    "better-auth": "^1.2.10",
     "mdxe": "^1.2.0",
     "next": "^15.0.0",
     "react": "^19.0.0",
