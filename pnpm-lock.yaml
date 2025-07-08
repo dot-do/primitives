@@ -1558,6 +1558,9 @@ importers:
       typescript:
         specifier: ^5.8.2
         version: 5.8.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@22.15.12)(jsdom@26.1.0(bufferutil@4.0.9)(utf-8-validate@6.0.5))(lightningcss@1.29.2)(sass@1.77.4)(terser@5.39.0)
 
   packages/digital-workers:
     dependencies:

@@ -25,22 +25,63 @@ pnpm add business-as-code
 
 ```typescript
 import { Business } from 'business-as-code'
-import { Human } from 'humans.do'
-import { Agent } from 'agents.do'
-import { Workflow } from 'workflows.do'
+import type { AgentConfig, HumanConfig } from 'business-as-code'
 
-// Create human roles
-class CEO extends Human {}
-class CTO extends Human {}
-class MarketingManager extends Human {}
+// Define human roles
+const ceoConfig: HumanConfig = {
+  name: 'John Doe',
+  email: 'ceo@acme.com',
+  role: 'Chief Executive Officer',
+  permissions: ['admin', 'approve']
+}
 
-// Create AI agents
-class DataAnalyst extends Agent {}
-class CustomerSupportAgent extends Agent {}
+const ctoConfig: HumanConfig = {
+  name: 'Jane Smith',
+  email: 'cto@acme.com', 
+  role: 'Chief Technology Officer',
+  permissions: ['execute', 'approve']
+}
 
-// Create business processes
-class CustomerOnboarding extends Workflow {}
-class ProductDevelopment extends Workflow {}
+// Define AI agents
+const dataAnalystConfig: AgentConfig = {
+  name: 'Data Analysis Agent',
+  role: 'Data Analyst',
+  objective: 'Analyze business data and generate insights',
+  keyResults: ['Generate weekly reports', 'Identify trends', 'Provide recommendations']
+}
+
+const customerSupportConfig: AgentConfig = {
+  name: 'Customer Support Agent',
+  role: 'Customer Support',
+  objective: 'Handle customer inquiries efficiently',
+  keyResults: ['Resolve 95% of tickets within 24h', 'Maintain 4.5+ satisfaction rating']
+}
+
+// Define business processes
+const customerOnboardingProcess = {
+  name: 'Customer Onboarding',
+  description: 'Process for onboarding new customers',
+  steps: [
+    {
+      id: 'welcome',
+      name: 'Send Welcome Email',
+      description: 'Send personalized welcome email',
+      type: 'automated',
+      inputs: ['customer_email', 'customer_name'],
+      outputs: ['email_sent']
+    },
+    {
+      id: 'setup',
+      name: 'Account Setup',
+      description: 'Set up customer account',
+      type: 'manual',
+      inputs: ['customer_data'],
+      outputs: ['account_created']
+    }
+  ],
+  triggers: ['new_customer_signup'],
+  outcomes: ['customer_onboarded']
+}
 
 // Define your business
 const myCompany = Business({
@@ -55,32 +96,25 @@ const myCompany = Business({
   ],
   // Human roles
   roles: {
-    ceo: CEO,
-    cto: CTO,
-    marketingManager: MarketingManager,
+    ceo: ceoConfig,
+    cto: ctoConfig,
   },
   // AI agents
   agents: {
-    dataAnalyst: DataAnalyst,
-    customerSupport: CustomerSupportAgent,
+    dataAnalyst: dataAnalystConfig,
+    customerSupport: customerSupportConfig,
   },
   // Organizational structure
   departments: {
     engineering: {
       name: 'Engineering Department',
-      lead: CTO,
-      members: [DataAnalyst],
-    },
-    marketing: {
-      name: 'Marketing Department',
-      lead: MarketingManager,
-      members: [],
+      lead: ctoConfig,
+      members: [dataAnalystConfig],
     },
   },
   // Business processes
   processes: {
-    customerOnboarding: CustomerOnboarding,
-    productDevelopment: ProductDevelopment,
+    customerOnboarding: customerOnboardingProcess,
   },
 })
 
@@ -229,6 +263,5 @@ const roleGuidelines = {
 
 ## Dependencies
 
-- [agents.do](https://github.com/drivly/agents.do) - Agent framework for AI operations
-- [humans.do](https://github.com/drivly/humans.do) - Human role definitions and interactions
-- [workflows.do](https://github.com/drivly/workflows.do) - Workflow definitions for business processes
+- `zod` - Schema validation for type-safe business configurations
+- Built-in Agent, Human, and Workflow implementations for human-AI collaboration
