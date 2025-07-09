@@ -5,6 +5,6 @@ import { languageModel } from './registry.js'
  * @param modelId The model identifier in the format "provider/model"
  * @returns Language model instance
  */
-export const model = (modelId: string) => {
+export const providerModel = (modelId: string) => {
   return languageModel(modelId)
 }
