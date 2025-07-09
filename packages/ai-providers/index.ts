@@ -13,6 +13,7 @@ export const model = createOpenAI({
 
 export { languageModel }
 export * from './src/registry.js'
+export * from './src/provider.js'
 
 export * from '@ai-sdk/openai'
 export * from '@ai-sdk/anthropic'
