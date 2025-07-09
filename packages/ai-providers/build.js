@@ -23,8 +23,9 @@ fs.mkdirSync('dist/src', { recursive: true });
 console.log('Compiling registry.ts to registry.js...');
 execSync('esbuild src/registry.ts --bundle --platform=node --outfile=dist/src/registry.js --format=esm --external:*');
 
-// Compile provider.ts to provider.js
+// Compile provider.ts to provider.js (for both old and new index.js compatibility)
 console.log('Compiling provider.ts to provider.js...');
 execSync('esbuild src/provider.ts --bundle --platform=node --outfile=dist/src/provider.js --format=cjs --external:*');
+execSync('esbuild src/provider.ts --bundle --platform=node --outfile=dist/provider.js --format=cjs --external:*');
 
 console.log('Build completed successfully!');
