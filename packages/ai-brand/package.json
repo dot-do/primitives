@@ -48,7 +48,7 @@
   },
   "homepage": "https://mdx.org.ai",
   "dependencies": {
-    "ai": "^2.2.31",
+    "ai": "^5.0.52",
     "ai-business": "workspace:*",
     "ai-providers": "workspace:*",
     "zod": "^3.22.4"
